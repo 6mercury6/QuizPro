@@ -12,3 +12,9 @@ class Result(models.Model):
     def __str__(self):
         return str(self.pk)
 
+
+    def __str__(self):
+        return f"{self.user}-{self.quiz.name}-{self.score}"
+
+    def get_absolute_url(self):
+        return reverse("Result_detail", kwargs={"pk": self.pk})

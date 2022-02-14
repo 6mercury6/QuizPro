@@ -1,31 +1,42 @@
 from django.db import models
-
-# Create your models here.
-from pickle import FALSE
-from tkinter import CASCADE
-from django.db import models
-
 from quizzes.models import Quiz
+from django.utils.translation import gettext_lazy as _
+
+
 # Create your models here.
-class Questions(models.Model):
-    text=models.CharField(max_length=200)
-    quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE)
-    created=models.DateField(auto_now_add=True)
+
+class Question(models.Model):
+    text = models.CharField(max_length=200)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
 
 
-    def __str__(self) :
-        return str(self.text)
+   # class Meta:
+      #  verbose_name = _("Question")
+       # verbose_name_plural = _("Questions")
+
     
-
     def get_answers(self):
         return self.answer_set.all()
+    
+    def __str__(self):
+        return self.text
 
-class Answers(models.Model):
-    text=models.TextField(max_length=200)
-    correct=models.BooleanField(default=False)
-    question=models.ForeignKey(Questions,on_delete=models.CASCADE)
-    created=models.DateTimeField(auto_now_add=True)
+    def get_absolute_url(self):
+        return reverse("Question_detail", kwargs={"pk": self.pk})
 
+class Answer(models.Model):
+    text = models.CharField(max_length=200)
+    correct = models.BooleanField(default=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+   # class Meta:
+    #    verbose_name = _("Answer")
+     #   verbose_name_plural = _("Answers")
 
     def __str__(self):
-        return f"sual:{self.question.text},cavab:{self.text},duzgun:{self.correct}"
+        return f"question: {self.question.text}, answer: {self.text}, correct: {self.correct} "
+
+    def get_absolute_url(self):
+        return reverse("Answer_detail", kwargs={"pk": self.pk})
